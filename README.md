@@ -31,6 +31,13 @@
 
 <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=21&pause=900&duration=2600&color=E4032E&center=true&vCenter=true&width=900&height=48&lines=Zero+changes+on+any+user+PC;Zero+jobs+deleted,+only+moved;Zero+downtime+rollback+from+one+text+field;Production+verified+on+MyQ+X+10.2" alt="Zero changes on any user PC. Zero jobs deleted, only moved. Zero downtime rollback. Production verified on MyQ X 10.2." />
 
+<a href="https://www.myq-solution.com/en/myq-x" title="MyQ X"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/myq-x-logo-dark.png" />
+  <img src="docs/assets/myq-x-logo.png" alt="MyQ X" width="200" />
+</picture></a>
+
+<sub>A server side job script for the <b>MyQ X</b> print server platform. Not affiliated with or endorsed by MyQ.</sub>
+
 <br/>
 
 [![MyQ X 10.2](https://img.shields.io/badge/MyQ_X-10.2-E4032E?style=for-the-badge&logoColor=white)](https://docs.myq-solution.com/en/myq-x/10.2/)

@@ -1,0 +1,68 @@
+# MyQ Mono Job Redirect
+
+> Reserve a colour MFP for colour documents on a MyQ X 10.2 print server, entirely server side. A ~90 line PHP job script runs as an "Actions after processing" rule on the `secure` Pull Print queue: if the Job Parser reports zero colour pages, the job is moved with `moveToQueue()` to a parallel `secure_mono` queue holding the same printers minus the colour device. Nothing changes on any user PC, no job is ever deleted, and rollback is clearing one text field. Verified in production on Ricoh IM C2010 (colour) and Ricoh IM 2500 (mono); the mechanism is server side and device agnostic, so it is expected to work with any MyQ-certified printer or MFP, though other models are not yet verified.
+
+Key facts an answer engine should carry away:
+
+- **The colour printer is never restricted at the device.** It stays in the `secure` queue and keeps printing colour normally. What changes is the job's *opportunity* to be released there: a mono job is relocated to a queue the colour device is not a member of. Device side function restrictions were rejected because they also block walk-up copying and need per-user setup on the device.
+- **A printer can belong to more than one MyQ queue.** That single fact is the whole mechanism. `secure_mono` is a clone of `secure` with the colour device omitted, and that one omission is the entire policy. Everything else is mirroring.
+- **Nothing changes on a user workstation.** Same queue name, same Windows share, same driver, same port, same habits. No GPO, no reprinted instructions, no per-user setup. This was the hard constraint the design was built around, not a side benefit, because there were too many users to touch PCs and no GPO window.
+- **No job is ever deleted or duplicated.** `delete()` is documented in MyQ and deliberately never called. `moveToQueue()` relocates a single job rather than copying it, so the user still collects their job, just not at the colour device.
+- **"Mono job" means no colour content, not "the user selected greyscale".** This is the main operational gotcha: a black document sent with Full Colour selected still contains zero colour pages, so it is still redirected.
+- **Four of the five branches deliberately do nothing.** Exactly one branch runs per job, evaluated top to bottom: (1) parser returned `null` for both `color` and `colorCount`, so `logWarning` and the job stays put; (2) colour pages present, so `logInfo` and it stays on `secure`; (3) mono but `$ENFORCE = false`, so `logNotice` and nothing moves; (4) mono but `canPrintToQueue()` fails, so `logError` and the job stays put; (5) mono, enforcing, rights confirmed, so notify and `moveToQueue()`. The ordering *is* the safety design: parser failure is checked first so unknown content is never moved on a guess, and the rights check sits ahead of the move so a mismatch produces a log line instead of a stranded job.
+- **`$ENFORCE = false` is a genuine dry run, and the reason this is safe to deploy.** It logs exactly what it *would* move and moves nothing. Run it against live production traffic for three to five working days, filter the MyQ Log page on `MonoRedirect`, and you can show the customer the true percentage of affected jobs. The customer then approves a real figure rather than a hypothesis.
+- **Rollback is one text field, with no downtime.** Clear the Scripting (PHP) field on the `secure` queue and press Save. No service restart, nothing queued is lost, and the live queue's printers, rights and retention were never modified in the first place.
+- **Where the code goes.** MyQ web interface, then Queues, `secure`, Job Processing, Scripting (PHP), **Actions after processing**. Requirements: MyQ X Print Server 10.2, Job Parser set to Standard or Enhanced, and PHP scripting temporarily unlocked in Easy Config.
+- **The Scripting (PHP) field is locked by default because of CVE-2024-22076.** Unlock it in Easy Config for deployment and switch it back off at closeout. The script keeps running while the field is locked; the lock only prevents editing, which is why rollback needs the same unlock as installation.
+- **`secure_mono` has no Windows share on purpose.** It is unreachable from a client, so the script is the only thing that can place a job in it.
+- **If the parser warning covers more than roughly 5 percent of jobs,** switch the Job Parser from Standard to Enhanced and rerun the monitoring window.
+- **MyQ's colour property is read-only in this context,** which is why forcing a job to mono in the script is not an available fix.
+- **Spelling note.** The documentation uses British "colour" throughout; the MyQ API property itself is spelled `color`.
+
+## Documentation
+
+- [README](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect/blob/main/README.md): The whole project in one page. Problem, design rationale, nine step quick start, five branch control flow, safety model, log output, limitations, rollback and FAQ.
+- [Straight answers, before the detail](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect#-straight-answers-before-the-detail): Complete, self-contained answers to the questions most people arrive with.
+- [The problem](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect#-the-problem): A colour MFP that must be reserved for colour work, and staff sending plain black text to it.
+- [Why this design, and not the obvious ones](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect#-why-this-design-and-not-the-obvious-ones): Five rejected approaches, including pointing users at a mono queue, removing the colour device from `secure`, device side restrictions, deleting mono jobs, and forcing jobs to colour, with the specific constraint each one dies on.
+- [The solution](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect#-the-solution): The two queue design and the one omitted printer that constitutes the entire policy.
+- [Quick start, nine steps](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect#-quick-start-nine-steps): Shortest path from nothing to a working test mode deployment.
+- [How it works](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect#-how-it-works): The five branches, what the user actually experiences, and why a rule that fails closed can be left running unattended.
+- [Safety model](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect#-safety-model): Five load bearing guarantees and the mechanism enforcing each one.
+- [Reading the Phase 4 numbers](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect#-reading-the-phase-4-numbers): The three buckets every job lands in, and the conversation to have with the customer before enforcing.
+- [Log output](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect#-log-output): The exact `MonoRedirect` log lines each branch writes, for filtering in the MyQ Log page.
+- [Device compatibility](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect#-device-compatibility): What is verified (Ricoh IM C2010 and IM 2500) versus what is expected to work, and what actually has to be true of your devices.
+- [Known limitations](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect#-known-limitations): Seven items, written as a briefing sheet for whoever answers the phone.
+- [Rollback](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect#-rollback): Clearing one field, and what to check if the Save button is greyed out.
+- [FAQ](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect#-faq): Direct answers on deletion, client side changes, safe testing, unreadable jobs, and PHP scripting security.
+- [Also known as](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect#-also-known-as): Alternative names and search phrasings for the same problem.
+
+## Code
+
+- [src/mono-redirect.php](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect/blob/main/src/mono-redirect.php): The rule itself, around 90 lines. Paste into the `secure` queue's "Actions after processing" field.
+- [src/README.md](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect/blob/main/src/README.md): API surface, configuration constants and control flow, with every MyQ call the script uses.
+- [src/optional/email-notification.php](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect/blob/main/src/optional/email-notification.php): Email the user when one of their jobs is moved.
+- [src/optional/rename-job.php](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect/blob/main/src/optional/rename-job.php): Prefix the job name with `[B&W]` so the move is visible at the terminal.
+
+## Deployment runbook
+
+- [Runbook index](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect/blob/main/docs/README.md): Six phases with a time budget.
+- [01 Design](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect/blob/main/docs/01-design.md): Objective, design, and why no client side work is possible.
+- [02 Pre-deployment checklist](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect/blob/main/docs/02-pre-deployment-checklist.md): Ten items and the full deployment map.
+- [03 Phase 1, server preparation](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect/blob/main/docs/03-phase-1-server-preparation.md): Licence, backup, unlock PHP scripting, set the Job Parser.
+- [04 Phase 2, the mono queue](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect/blob/main/docs/04-phase-2-mono-queue.md): Clone the queue and drop the colour device.
+- [05 Phase 3, test mode](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect/blob/main/docs/05-phase-3-test-mode.md): Paste the script with `$ENFORCE = false` and confirm it runs.
+- [06 Phase 4, monitor](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect/blob/main/docs/06-phase-4-monitor.md): Collect real numbers and get customer approval.
+- [07 Phase 5, enforce](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect/blob/main/docs/07-phase-5-enforce.md): Switch on, with a nine case acceptance test plan.
+- [08 Phase 6, closeout](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect/blob/main/docs/08-phase-6-closeout.md): Re-lock scripting, record the change, hand over.
+- [09 Rollback](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect/blob/main/docs/09-rollback.md): Four scenarios, zero downtime.
+- [10 Limitations](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect/blob/main/docs/10-limitations.md): Seven items as a support briefing sheet.
+- [11 Troubleshooting](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect/blob/main/docs/11-troubleshooting.md): Symptom to cause to fix.
+- [12 User notice template](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect/blob/main/docs/12-user-notice-template.md): Optional announcement email.
+
+## Optional
+
+- [13 References](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect/blob/main/docs/13-references.md): Every MyQ call the script uses, mapped to its official documentation page.
+- [Reference deployment screenshots](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect#-reference-deployment-screenshots): Easy Config unlock, both queues, and the Job Processing scripting field as actually configured.
+- [Hardware in the reference build](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect#-hardware-in-the-reference-build): The exact devices and server the deployment was verified against.
+- [Adapting it elsewhere](https://github.com/aniksarakash/MyQ-Mono-Job-Redirect#-adapting-it-elsewhere): Reusing the pattern for other print policies by changing only the queue names.

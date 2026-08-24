@@ -1,0 +1,47 @@
+cff-version: 1.2.0
+message: "If you use this playbook or the job script, please cite it as below."
+title: "MyQ Mono Job Redirect: reserving a colour MFP for colour documents with a server side MyQ X job script"
+abstract: >-
+  A production deployment playbook and PHP job script for MyQ X 10.2 that
+  reserves a colour multifunction printer for colour documents. The script runs
+  as an "Actions after processing" rule on a Pull Print queue: when the MyQ Job
+  Parser reports zero colour pages, the job is relocated with moveToQueue() to a
+  parallel queue containing the same printers minus the colour device, so a mono
+  job simply has no opportunity to be released there. Nothing changes on any user
+  workstation, no driver, share, port or GPO is touched, and no job is ever
+  deleted or duplicated. Five branches are evaluated per job and four of them
+  deliberately do nothing, so unreadable content and rights mismatches produce a
+  log line rather than a stranded job. An $ENFORCE flag provides a genuine dry
+  run against live traffic, and rollback is clearing a single text field with no
+  service restart and no downtime. Verified in production on Ricoh IM C2010 and
+  IM 2500; the mechanism is server side and device agnostic. Includes a six phase
+  runbook, rollback scenarios, limitations, and troubleshooting.
+type: software
+authors:
+  - given-names: "Anik Sarker"
+    family-names: "Akash"
+    alias: "aniksarakash"
+    email: "56483143+aniksarakash@users.noreply.github.com"
+repository-code: "https://github.com/aniksarakash/MyQ-Mono-Job-Redirect"
+url: "https://github.com/aniksarakash/MyQ-Mono-Job-Redirect"
+license: MIT
+date-released: "2026-08-24"
+keywords:
+  - myq
+  - myq-x
+  - print-management
+  - job-scripting
+  - php
+  - moveToQueue
+  - pull-print
+  - print-policy
+  - colour-restriction
+  - color-restriction
+  - mono-redirect
+  - job-parser
+  - ricoh
+  - mfp
+  - print-server
+  - cost-control
+  - toner-saving
+  - queue-management
