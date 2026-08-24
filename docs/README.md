@@ -6,7 +6,7 @@
 |---|---|
 | 🏢 Prepared by | SPSL Technical, Smart Printing Solutions Ltd. |
 | 🖧 Platform | MyQ X Print Server 10.2 |
-| 🖨️ Devices | Ricoh IM C2010 (colour, restricted), Ricoh IM 2500 (mono), plus existing fleet |
+| 🖨️ Devices | Verified on Ricoh IM C2010 (colour, restricted) and Ricoh IM 2500 (mono), plus existing fleet. The mechanism is server side, so it is expected to work with any MyQ-certified device. |
 | 📄 Version | 2.0, server side design |
 | 👤 Client | `_________________________` |
 | 🔧 Engineer | `_________________________` |

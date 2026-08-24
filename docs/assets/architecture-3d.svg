@@ -1,0 +1,181 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1160 720" width="1160" height="720" role="img" aria-label="Isometric 3D diagram: the secure queue holds the whole printer fleet including the Ricoh IM C2010, a PHP job script inspects each job, and mono jobs drop to the secure_mono queue which holds the same fleet minus the colour device.">
+<title>MyQ Mono Job Redirect - isometric architecture</title>
+<desc>Three stacked isometric planes. The top plane is the secure queue with four devices, one of them the colour Ricoh IM C2010. The middle plane is the mono-redirect.php decision gate. The bottom plane is the secure_mono queue with the same fleet minus the colour device. An animated job cube travels from the user PC through the gate down to the mono queue.</desc>
+
+<style>
+  svg{
+    --bg:#ffffff; --ink:#0f172a; --sub:#475569; --hair:#cbd5e1;
+    --blueT:#93c5fd; --blueR:#3b82f6; --blueL:#1d4ed8;
+    --purT:#d8b4fe; --purR:#a855f7; --purL:#6d28d9;
+    --grnT:#86efac; --grnR:#22c55e; --grnL:#15803d;
+    --redT:#fda4af; --redR:#f43f5e; --redL:#be123c;
+    --slT:#e2e8f0;  --slR:#94a3b8;  --slL:#475569;
+    --amb:#d97706;
+  }
+  @media (prefers-color-scheme: dark){
+    svg{
+      --bg:#0b1220; --ink:#e2e8f0; --sub:#94a3b8; --hair:#334155;
+      --blueT:#60a5fa; --blueR:#2563eb; --blueL:#1e3a8a;
+      --purT:#c084fc; --purR:#9333ea; --purL:#581c87;
+      --grnT:#4ade80; --grnR:#16a34a; --grnL:#14532d;
+      --redT:#fb7185; --redR:#e11d48; --redL:#881337;
+      --slT:#94a3b8;  --slR:#64748b;  --slL:#334155;
+      --amb:#fbbf24;
+    }
+  }
+  text{font-family:ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  .h{fill:var(--ink);font-size:19px;font-weight:700;letter-spacing:.2px}
+  .s{fill:var(--sub);font-size:13.5px;font-weight:500}
+  .m{fill:var(--sub);font-size:12px;font-weight:600;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.4px}
+  .k{font-size:13px;font-weight:700}
+  .cap{fill:var(--sub);font-size:11.5px;font-weight:600;letter-spacing:1.6px}
+  .lead{stroke:var(--hair);stroke-width:1.4;fill:none;stroke-dasharray:3 4}
+  .fl1{animation:fl 7s ease-in-out infinite}
+  .fl2{animation:fl 7s ease-in-out infinite;animation-delay:-2.3s}
+  .fl3{animation:fl 7s ease-in-out infinite;animation-delay:-4.6s}
+  @keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+  .pulse{animation:pu 2.6s ease-in-out infinite}
+  @keyframes pu{0%,100%{opacity:.22}50%{opacity:.8}}
+  @media (prefers-reduced-motion: reduce){
+    .fl1,.fl2,.fl3,.pulse{animation:none}
+  }
+</style>
+
+<defs>
+  <linearGradient id="glow" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#a855f7" stop-opacity=".55"/>
+    <stop offset="100%" stop-color="#a855f7" stop-opacity="0"/>
+  </linearGradient>
+  <filter id="soft" x="-60%" y="-60%" width="220%" height="220%">
+    <feGaussianBlur stdDeviation="10"/>
+  </filter>
+
+  <g id="dev">
+    <path d="M-20.78 38 L-20.78 12 L5.2 27 L5.2 53 Z" fill="var(--slL)"/>
+    <path d="M25.98 15 L25.98 41 L5.2 53 L5.2 27 Z" fill="var(--slR)"/>
+    <path d="M0 0 L25.98 15 L5.2 27 L-20.78 12 Z" fill="var(--slT)"/>
+  </g>
+  <g id="devColour">
+    <path d="M-20.78 38 L-20.78 12 L5.2 27 L5.2 53 Z" fill="var(--redL)"/>
+    <path d="M25.98 15 L25.98 41 L5.2 53 L5.2 27 Z" fill="var(--redR)"/>
+    <path d="M0 0 L25.98 15 L5.2 27 L-20.78 12 Z" fill="var(--redT)"/>
+  </g>
+  <g id="devGhost" opacity=".9">
+    <path d="M0 0 L25.98 15 L5.2 27 L-20.78 12 Z" fill="none" stroke="var(--redR)" stroke-width="1.6" stroke-dasharray="4 4"/>
+    <path d="M-20.78 12 L-20.78 38 L5.2 53 L5.2 27" fill="none" stroke="var(--redR)" stroke-width="1.6" stroke-dasharray="4 4"/>
+    <path d="M25.98 15 L25.98 41 L5.2 53" fill="none" stroke="var(--redR)" stroke-width="1.6" stroke-dasharray="4 4"/>
+  </g>
+
+  <!-- secure : W260 D150 H18 -->
+  <g id="planeBlue">
+    <path d="M-129.9 93 L-129.9 75 L95.3 205 L95.3 223 Z" fill="var(--blueL)"/>
+    <path d="M225.2 130 L225.2 148 L95.3 223 L95.3 205 Z" fill="var(--blueR)"/>
+    <path d="M0 0 L225.2 130 L95.3 205 L-129.9 75 Z" fill="var(--blueT)"/>
+    <path d="M0 0 L225.2 130 L95.3 205 L-129.9 75 Z" fill="none" stroke="var(--blueL)" stroke-width="1" opacity=".45"/>
+  </g>
+  <g id="planeGreen">
+    <path d="M-129.9 93 L-129.9 75 L95.3 205 L95.3 223 Z" fill="var(--grnL)"/>
+    <path d="M225.2 130 L225.2 148 L95.3 223 L95.3 205 Z" fill="var(--grnR)"/>
+    <path d="M0 0 L225.2 130 L95.3 205 L-129.9 75 Z" fill="var(--grnT)"/>
+    <path d="M0 0 L225.2 130 L95.3 205 L-129.9 75 Z" fill="none" stroke="var(--grnL)" stroke-width="1" opacity=".45"/>
+  </g>
+</defs>
+
+<rect width="1160" height="720" fill="var(--bg)"/>
+
+<!-- ===== USER PC ===== -->
+<g transform="translate(232,44)">
+  <g class="fl1">
+    <path d="M-45.03 44 L-45.03 26 L11.26 58.5 L11.26 76.5 Z" fill="var(--blueL)"/>
+    <path d="M56.29 32.5 L56.29 50.5 L11.26 76.5 L11.26 58.5 Z" fill="var(--blueR)"/>
+    <path d="M0 0 L56.29 32.5 L11.26 58.5 L-45.03 26 Z" fill="var(--blueT)"/>
+    <text class="k" x="6" y="37" text-anchor="middle" fill="#0f172a">USER PC</text>
+  </g>
+</g>
+<text class="s" x="232" y="164" text-anchor="middle">Same driver. Same share. Same port.</text>
+<text class="m" x="232" y="184" text-anchor="middle">ZERO client-side changes</text>
+<path class="lead" d="M300 110 C 376 126, 410 146, 442 168"/>
+
+<!-- ===== PLANE A : secure ===== -->
+<g transform="translate(560,104)">
+  <g class="fl2">
+    <use xlink:href="#planeBlue" href="#planeBlue"/>
+    <g transform="translate(21.6,45.5)"><use xlink:href="#dev" href="#dev"/></g>
+    <g transform="translate(99.6,90.5)"><use xlink:href="#dev" href="#dev"/></g>
+    <g transform="translate(-34.7,78)"><use xlink:href="#dev" href="#dev"/></g>
+    <g transform="translate(43.3,123)">
+      <use xlink:href="#devColour" href="#devColour"/>
+      <circle cx="2" cy="-16" r="4.5" fill="var(--redR)" class="pulse"/>
+    </g>
+  </g>
+</g>
+<g transform="translate(838,140)">
+  <text class="cap" x="0" y="0">QUEUE 1 &#183; UNTOUCHED</text>
+  <text class="h" x="0" y="27">secure</text>
+  <text class="s" x="0" y="51">Pull Print &#183; Windows share &#183; whole fleet</text>
+  <text class="s" x="0" y="71" fill="var(--redR)">&#9679; includes the Ricoh IM C2010 (colour)</text>
+  <text class="m" x="0" y="95">every user prints here, as always</text>
+</g>
+
+<!-- ===== PLANE B : the rule ===== -->
+<ellipse cx="608" cy="420" rx="152" ry="54" fill="url(#glow)" filter="url(#soft)" class="pulse"/>
+<g transform="translate(560,346)">
+  <g class="fl3">
+    <path d="M-97.4 66 L-97.4 56 L71.5 153.5 L71.5 163.5 Z" fill="var(--purL)"/>
+    <path d="M168.9 97.5 L168.9 107.5 L71.5 163.5 L71.5 153.5 Z" fill="var(--purR)"/>
+    <path d="M0 0 L168.9 97.5 L71.5 153.5 L-97.4 56 Z" fill="var(--purT)"/>
+    <text class="k" x="36" y="92" text-anchor="middle" fill="#0f172a">mono-redirect.php</text>
+  </g>
+</g>
+<g transform="translate(838,378)">
+  <text class="cap" x="0" y="0">THE RULE &#183; FIVE BRANCHES</text>
+  <text class="h" x="0" y="27">Actions after processing</text>
+  <text class="s" x="0" y="51">reads <tspan class="m">color</tspan> &#183; <tspan class="m">colorCount</tspan> &#183; <tspan class="m">monoCount</tspan></text>
+  <text class="s" x="0" y="71">four of the five branches do nothing, on purpose</text>
+  <text class="m" x="0" y="95" fill="var(--amb)">$ENFORCE = false &#8594; log only, move nothing</text>
+</g>
+
+<!-- ===== PLANE C : secure_mono ===== -->
+<g transform="translate(560,488)">
+  <g class="fl1">
+    <use xlink:href="#planeGreen" href="#planeGreen"/>
+    <g transform="translate(21.6,45.5)"><use xlink:href="#dev" href="#dev"/></g>
+    <g transform="translate(99.6,90.5)"><use xlink:href="#dev" href="#dev"/></g>
+    <g transform="translate(-34.7,78)"><use xlink:href="#dev" href="#dev"/></g>
+    <g transform="translate(43.3,123)"><use xlink:href="#devGhost" href="#devGhost"/></g>
+  </g>
+</g>
+<g transform="translate(838,534)">
+  <text class="cap" x="0" y="0">QUEUE 2 &#183; SCRIPT-ONLY</text>
+  <text class="h" x="0" y="27">secure_mono</text>
+  <text class="s" x="0" y="51">Pull Print &#183; no share &#183; identical rights</text>
+  <text class="s" x="0" y="71" fill="var(--grnR)">&#9675; the same fleet, minus that one device</text>
+  <text class="m" x="0" y="95">nobody prints here. only moveToQueue()</text>
+</g>
+
+<!-- ===== ANIMATED JOB CUBE ===== -->
+<path id="route" d="M262 86 C 360 114, 430 140, 500 182 C 554 226, 552 302, 580 388 C 596 446, 566 502, 536 558" fill="none" stroke="none"/>
+<g>
+  <path d="M-9 15.6 L-9 6 L0 11.2 L0 20.8 Z" fill="var(--amb)" opacity=".7"/>
+  <path d="M9 6 L9 15.6 L0 20.8 L0 11.2 Z" fill="var(--amb)" opacity=".95"/>
+  <path d="M0 0 L9 6 L0 11.2 L-9 6 Z" fill="#fde68a"/>
+  <animateMotion dur="5.5s" repeatCount="indefinite" calcMode="linear">
+    <mpath xlink:href="#route" href="#route"/>
+  </animateMotion>
+  <animate attributeName="opacity" values="0;1;1;1;0" keyTimes="0;0.08;0.5;0.9;1" dur="5.5s" repeatCount="indefinite"/>
+</g>
+
+<!-- ===== FLOW LABELS ===== -->
+<text class="m" x="436" y="286" text-anchor="end" fill="var(--blueR)">has colour &#8594; stays put</text>
+<text class="m" x="436" y="472" text-anchor="end" fill="var(--grnR)">zero colour &#8594; moveToQueue()</text>
+<path class="lead" d="M446 278 C 486 272, 502 250, 510 230"/>
+<path class="lead" d="M446 478 C 486 488, 504 514, 514 538"/>
+
+<!-- ===== FOOTER STRIP ===== -->
+<g transform="translate(64,682)">
+  <rect x="0" y="0" width="46" height="4" rx="2" fill="var(--blueR)"/>
+  <rect x="52" y="0" width="46" height="4" rx="2" fill="var(--purR)"/>
+  <rect x="104" y="0" width="46" height="4" rx="2" fill="var(--grnR)"/>
+  <text class="m" x="0" y="26">MyQ X 10.2 &#183; job scripting &#183; no job is ever deleted</text>
+</g>
+</svg>
