@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0 — server side design
+## 2.0, server side design
 
 The design that ships in this repository.
 
@@ -19,6 +19,6 @@ The design that ships in this repository.
 **Why the change**
 The earlier approach needed a separate mono queue that users printed to directly, which meant a driver and port change on every PC. The customer had too many users for that. Routing on the server side removed the client work entirely.
 
-## 1.0 — client side design (superseded)
+## 1.0, client side design (superseded)
 
 Separate mono queue with its own Windows share, pushed to PCs by GPO. Abandoned because the client side rollout was not viable at this site.

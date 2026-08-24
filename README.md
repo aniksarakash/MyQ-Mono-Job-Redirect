@@ -415,12 +415,12 @@ Seven items, all of which must be briefed to the customer before deployment. Ful
 
 Every property and method used traces to official MyQ X 10.2 documentation.
 
-- 📘 **[PHP Scripts Actions Examples](https://docs.myq-solution.com/en/myq-x/10.2/print-server/php-scripts-actions-examples)** — the canonical source. This project composes its colour property, `canPrintToQueue` rights check and conditional move patterns.
+- 📘 **[PHP Scripts Actions Examples](https://docs.myq-solution.com/en/myq-x/10.2/print-server/php-scripts-actions-examples)**, the canonical source. This project composes its colour property, `canPrintToQueue` rights check and conditional move patterns.
 - 📘 [Job Scripting](https://docs.myq-solution.com/en/myq-x/10.2/print-server/job-scripting)
 - 📘 [Job Processor Scripting](https://docs.myq-solution.com/en/myq-x/10.2/print-server/job-processor-scripting)
 - 📘 [Job Scripting Reference](https://docs.myq-solution.com/en/myq-x/10.2/print-server/job-scripting-reference)
 - 📘 [User Interaction Scripting](https://docs.myq-solution.com/en/myq-x/10.2/print-server/user-interaction-scripting)
-- 🔐 **CVE-2024-22076** — the reason the Scripting (PHP) field is locked by default.
+- 🔐 **CVE-2024-22076**, the reason the Scripting (PHP) field is locked by default.
 
 Call by call mapping in [`docs/13-references.md`](docs/13-references.md).
 
