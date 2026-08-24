@@ -1,0 +1,23 @@
+# OS and editor noise
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+*.swp
+*~
+.vscode/
+.idea/
+
+# Local working copies and site specific data
+*.local.md
+*.bak
+*.tmp
+
+# Never commit customer data or MyQ exports
+*.mdb
+*.sql
+*.myq
+*-backup.*
+logs/
+exports/

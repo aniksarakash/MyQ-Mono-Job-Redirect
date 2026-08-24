@@ -1,0 +1,7 @@
+# MyQ job scripts are PHP fragments with no opening tag.
+# Force correct highlighting and keep them out of language stats noise.
+*.php linguist-language=PHP
+
+# Normalise text, keep binaries intact.
+* text=auto eol=lf
+*.png binary
